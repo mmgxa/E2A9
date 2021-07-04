@@ -156,6 +156,14 @@ In order to calculate the BLEU scores (after every epoch during training), the t
 
 It is a measure of how complex a sentence is. A well-translated (perfect) sentence/translation will have a lower perplexity score; a 'bad' translation will have a higher perplexity score. Thus, unlike the previous measures, lower is better.
 
+It is calulated as 
+![Alt text](perp.png)
+where
+- N is the length of the sentence
+- n is the number of words in the n-gram (e.g. 2 for a bigram).
+- P is the conditional probability of a word appearing after a given n-gram sequence
+
+
 ## Interpretation/Evaluation
 As stated, lower perplexity score is better. The following texts were all generated using the same corpus, but different n-gram sequences. Trigram model had the lowest perplexity (and the most clarity in meaning).
 
