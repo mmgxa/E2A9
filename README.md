@@ -12,9 +12,20 @@ False Positives (FP) : 'True' Predictions given that they belong to the 'False' 
 
 False Negatives (FP) : 'False' Predictions given that they belong to the 'True' class
 
+![Alt text](confusion-matrix.png)
+
+**Precision**  
+Precision is the ratio of correctly predicted positive observations to the total predicted positive observations.
+
 <img src="https://render.githubusercontent.com/render/math?math=\text{Precision} = \frac{TP}{TP %2B FP}">
 
+**Recall**  
+ Recall is the ratio of correctly predicted positive observations to the all observations in actual positive class.
+ 
 <img src="https://render.githubusercontent.com/render/math?math=\text{Recall} = \frac{TP}{TP  %2B FN}">
+
+**F1**  
+F1 Score is the weighted average of Precision and Recall.
 
 <img src="https://render.githubusercontent.com/render/math?math=\text{F1} = 2 * \frac{\text{Precision} \ * \ \text{Recall}}{\text{Precision} %2B \text{Recall}}">
 
@@ -42,7 +53,10 @@ train_dataset.targets.apply_(ev)
 test_dataset.targets.apply_(ev)
 ```
 
-The number of classes have been reduced to 2 (0 or 1.
+The number of classes have been reduced to 2 (0 or 1).
+
+## Training logs
+![Alt text](logs.png)
 
 # BLEU Scores
 
@@ -52,7 +66,9 @@ It evaluates the quality of machine translation by comparing it with (one or mor
 - clipped precision
 - brevity penalty
 
-### Clipped Precision
+
+
+### Clipped Precision (or N-Gram Overlap)
 It is a measure of how much the 'candidate' (prediction) translation matches the 'reference' (actual, human-translated) translation. Steps:
 - Consider unigram sequences
 - Initialize a counter for the unigrams (for both predicted and actual translation). Note that the counter has unique keys only. All values are counts.
@@ -64,16 +80,75 @@ It is a measure of how much the 'candidate' (prediction) translation matches the
 - Weight all the scores equally with their logarithms.
 - Sum the result and then take the exponent
 
+```python
+def clipped_precision(target, prediction):
+
+    clipped_precision_score = []
+
+    for i in range(1, 5):
+        prediction_n_gram = Counter(ngrams(prediction, i))  
+        target_n_gram = Counter(ngrams(target, i))  
+
+        c = sum(prediction_n_gram.values())  
+
+        for j in prediction_n_gram:  
+            if j in target_n_gram: 
+
+                if (prediction_n_gram[j] > target_n_gram[j] ):  
+                    prediction_n_gram[j] = target_n_gram[j]  
+            else:
+                prediction_n_gram[j] = 0  # else reference n-gram = 0
+
+        clipped_precision_score.append(sum(prediction_n_gram.values()) / c)
+
+    weights = [0.25] * 4
+    cl = np.array(clipped_precision_score)
+    w = np.array(weights)
+
+    s1 = w * np.log(cl)
+
+    s = np.exp(np.sum(s1))
+    return s
+```
 
 ### Brevity Penalty
 This penalizes the scores if the length of the prediciton is not longer than the actual sentence's length by a factor
-
-<img src="https://render.githubusercontent.com/render/math?math=\text{BP} =\exp\bigg(1 - \frac{\text{actual length}}{\text{prediction length}}\bigg)">
-
 <!--- 
 $\text{BP} =\exp\bigg(1 - \frac{\text{actual length}}{\text{prediction length}}\bigg)$
 -->
+<img src="https://render.githubusercontent.com/render/math?math=\text{BP} =\exp\bigg(1 - \frac{\text{actual length}}{\text{prediction length}}\bigg)">
+
+```python
+def brevity_penalty(target, prediction):
+    targ_length = len(target)
+    pred_length = len(prediction)
+
+    if  pred_length > targ_length:
+        BP = 1
+    else:
+        penalty = 1 - (targ_length / pred_length)
+        BP = np.exp(penalty)
+
+    return BP
+```
+
+Finally, the BLEU scores are calculated as 
+
+```python
+def bleu_score(target, prediction):
+    BP = brevity_penalty(target, prediction)
+    precision = clipped_precision(target, prediction)
+    return BP * precision
+```
 
 
 ## Interpretation
 ![Alt text](bleu_interp.png)
+
+## Code Modification
+In order to calculate the BLEU scores (after every epoch during training), the testing loop had to be modified. The output from the model was converted from indices to tokens, and these tokenized sentences were stored in a list.
+
+## BLEU logs
+![Alt text](logs2.png)
+![Alt text](bleu.png)
+
