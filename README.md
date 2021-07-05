@@ -168,3 +168,11 @@ where
 As stated, lower perplexity score is better. The following texts were all generated using the same corpus, but different n-gram sequences. Trigram model had the lowest perplexity (and the most clarity in meaning).
 
 ![Alt text](perp_eval.png)
+
+# BERTScore
+
+## Definition
+BERTScore leverages the pre-trained contextual embeddings from BERT and matches words in candidate and reference sentences by cosine similarity.
+
+## Evaluation
+![Alt text](bert_score.png)
