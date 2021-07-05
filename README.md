@@ -185,3 +185,5 @@ All three metrics (BERT P, BERT R, and BERT F1) have been reported in the notebo
 
 ![Alt text](r4.png)
 ![Alt text](f14.png)
+
+**Note: While running the experiment, my colab crashed, saying that all RAM had been used  and the kernel restaarted. I only managed to run it for ~5 epochs.**
