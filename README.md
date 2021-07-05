@@ -1,6 +1,6 @@
 # E2A9
 
-# Precision, Recall, and F1 Scores
+# Precision, Recall, and F1 Scores (END2_Assign_9_P1.ipynb)
 
 ## Definitions
 
@@ -58,7 +58,7 @@ The number of classes have been reduced to 2 (0 or 1).
 ## Training logs
 ![Alt text](logs.png)
 
-# BLEU Scores
+# BLEU Scores (END2_Assign_9_P2.ipynb)
 
 It stands for **B**i**L**ingual **E**valuation **U**nderstudy.
 
@@ -169,10 +169,19 @@ As stated, lower perplexity score is better. The following texts were all genera
 
 ![Alt text](perp_eval.png)
 
-# BERTScore
+# BERTScore (END2 - Assign 9_P4.ipynb)
 
 ## Definition
-BERTScore leverages the pre-trained contextual embeddings from BERT and matches words in candidate and reference sentences by cosine similarity.
+BERTScore leverages the pre-trained contextual embeddings from BERT and matches words in candidate and reference sentences by cosine similarity. The `bert_score` function returns the Precision, Recall, and F1 Score for the samples, after which its average can be found using the `.mean()` method. 
 
+All three metrics (BERT P, BERT R, and BERT F1) have been reported in the notebook
 ## Evaluation
 ![Alt text](bert_score.png)
+
+## Training logs
+![Alt text](logs4.png)
+
+![Alt text](p4.png)
+
+![Alt text](r4.png)
+![Alt text](f14.png)
